@@ -269,12 +269,13 @@
   <a href="#overview">Overview</a>
   <a href="#bathy">Bathy</a>
   <a href="#substrate">Substrate</a>
-  <a href="#openers">8 Openers</a>
+  <a href="#openers">13 Openers</a>
   <a href="#convoy">Convoy</a>
   <a href="#jepa">3 JEPAs</a>
   <a href="#witness">Witness</a>
   <a href="#fables">Fables</a>
   <a href="#math">Math</a>
+  <a href="#temperature">Temperature</a>
   <a href="#topology">Topology</a>
   <a href="#loop">The Loop</a>
 </nav>
@@ -402,8 +403,8 @@
 </section>
 
 <section class="section" id="openers">
-  <h2>4. The 8 Openers — 8 views of the same graph</h2>
-  <div class="subtitle">The same chart, rendered through 8 different interfaces. Each opener is a kindness to a different kind of user.</div>
+  <h2>4. The 13 Openers — 13 views of the same graph</h2>
+  <div class="subtitle">The same chart, rendered through 13 different interfaces. Each opener is a kindness to a different kind of user.</div>
   <div class="grid grid-4">
     <div class="opener-card">
       <div class="opener-icon">📊</div>
@@ -444,6 +445,31 @@
       <div class="opener-icon">📚</div>
       <div class="opener-name">PLATO</div>
       <div class="opener-desc">Fable 06 — the lesson</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">📝</div>
+      <div class="opener-name">Slate</div>
+      <div class="opener-desc">paper notebook, hand-drawn ASCII</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">⚓</div>
+      <div class="opener-name">Harbor</div>
+      <div class="opener-desc">nautical chart, lat/lon, depth_fathoms</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🪸</div>
+      <div class="opener-name">Reef</div>
+      <div class="opener-desc">3D depth contours, bump_lines</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🤿</div>
+      <div class="opener-name">Dive</div>
+      <div class="opener-desc">underwater descent, pressure increasing</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🌊</div>
+      <div class="opener-name">Tide</div>
+      <div class="opener-desc">trend — which cells are fresher or staler</div>
     </div>
   </div>
 </section>
@@ -590,6 +616,41 @@
   </div>
 </section>
 
+<section class="section" id="temperature">
+  <h2>10. The Temperature — Paper 124</h2>
+  <div class="subtitle">Entropy of the witness log over a sliding time window. Cold = few writes, hot = many writes.</div>
+  <div class="grid grid-4">
+    <div class="card" style="background: var(--bg);">
+      <div class="stat-label">Frozen (T = 0)</div>
+      <div class="stat" style="color: var(--text-dim);">❄️</div>
+      <div class="card-sub">No writes in window. Dormant.</div>
+    </div>
+    <div class="card" style="background: var(--bg);">
+      <div class="stat-label">Cold (0 &lt; T ≤ 0.5)</div>
+      <div class="stat" style="color: #60a5fa;">🥶</div>
+      <div class="card-sub">1-2 op types dominate.</div>
+    </div>
+    <div class="card" style="background: var(--bg);">
+      <div class="stat-label">Warm (0.5 &lt; T ≤ 1.5)</div>
+      <div class="stat" style="color: var(--stale);">🌤️</div>
+      <div class="card-sub">3-5 op types. Mixed activity.</div>
+    </div>
+    <div class="card" style="background: var(--bg);">
+      <div class="stat-label">Hot (T &gt; 1.5)</div>
+      <div class="stat" style="color: var(--red);">🔥</div>
+      <div class="card-sub">6+ op types. High churn.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top: 16px;">
+    <div class="card-title">How temperature affects behavior</div>
+    <ul style="font-size: 12px; color: var(--text-dim); list-style: none; margin-top: 8px;">
+      <li>• <strong style="color: var(--text);">JEPA training:</strong> Reweight loss by 1/(T + ε) so cold cells aren't ignored</li>
+      <li>• <strong style="color: var(--text);">Opener selection:</strong> Cold cells get cheap openers (slate, chart); hot cells get deep openers (synthesize, cross-reference)</li>
+      <li>• <strong style="color: var(--text);">Decay rate:</strong> Hot substrates decay cells faster (λ_eff = λ · (1 + α·T))</li>
+    </ul>
+  </div>
+</section>
+
 <section class="section" id="topology">
   <h2>10. The Topology — the substrate knows its own shape</h2>
   <div class="subtitle">β₀ (components) and β₁ (cycles) measured. The fables form a mesh. (Paper 120: The Cycles.)</div>
@@ -628,7 +689,7 @@
     <p>Canon (papers 107-122) → Code (quilt-substrate) → Tests (244) → Papers (more fables) → Code (more substrate) → Tests (more) → ...</p>
     <p>The fables are the requirements. The substrate is the implementation.</p>
     <p>The math is the proof. The witness log is the record.</p>
-    <p>The openers are the kindness. The cycles are the mesh.</p>
+    <p>The 13 openers are the kindness. The cycles are the mesh.</p>
     <p style="margin-top: 16px; color: var(--text-dim); font-size: 12px;">— Reyes, sailing the Inner Sound, 12-inch tablet, open source, MIT</p>
   </div>
 </section>
