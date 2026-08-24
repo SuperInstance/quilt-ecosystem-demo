@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Holodeck — The Quilt Ecosystem in One Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131826;
+    --cell: #1f2937;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent: #38bdf8;
+    --border: #334155;
+    --fresh: #4ade80;
+    --stale: #fbbf24;
+    --red: #f87171;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .hero {
+    padding: 48px 32px 32px;
+    text-align: center;
+    background: linear-gradient(180deg, #0a0e1a 0%, #131826 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .tagline {
+    color: var(--text-dim);
+    font-size: 14px;
+    font-style: italic;
+  }
+  .nav {
+    display: flex;
+    gap: 4px;
+    padding: 12px 32px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav a:hover { color: var(--text); background: var(--cell); }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+  }
+  .section {
+    margin-bottom: 48px;
+  }
+  .section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--accent);
+  }
+  .section .subtitle {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .grid {
+    display: grid;
+    gap: 16px;
+  }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .card-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .stat {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fresh);
+    margin: 8px 0;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .bathy-canvas {
+    background: var(--bg);
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100%;
+    height: 320px;
+    display: block;
+  }
+  .witness-entry {
+    font-size: 11px;
+    padding: 4px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    margin: 2px 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .witness-entry .agent { color: var(--accent); }
+  .witness-entry .action { color: var(--fresh); }
+  .witness-entry .addr { color: var(--text-dim); }
+  .witness-entry .just {
+    color: var(--purple);
+    font-style: italic;
+    display: block;
+    margin-top: 2px;
+  }
+  .fable {
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 8px 0;
+  }
+  .fable-title { font-size: 13px; font-weight: 600; }
+  .fable-text { font-size: 12px; color: var(--text-dim); margin: 6px 0; }
+  .fable-lesson { font-size: 12px; color: var(--accent); font-style: italic; margin-top: 6px; }
+  .theorem {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .theorem-name { font-size: 13px; font-weight: 600; color: var(--fresh); }
+  .theorem-stmt { font-size: 12px; color: var(--text-dim); margin: 6px 0; }
+  .opener-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .opener-card:hover {
+    border-color: var(--accent);
+    background: var(--cell);
+  }
+  .opener-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  .opener-name { font-size: 12px; font-weight: 600; }
+  .opener-desc { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+  .convoy-viz {
+    display: flex;
+    gap: 4px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+  .convoy-boat {
+    padding: 4px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .convoy-boat.outlier { background: var(--red); color: var(--bg); }
+  .convoy-boat.robust { background: var(--fresh); color: var(--bg); }
+  .jepe-formula {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--accent);
+    margin: 8px 0;
+  }
+  .merkle-tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+  }
+  .merkle-row { display: flex; gap: 8px; }
+  .merkle-hash {
+    padding: 4px 8px;
+    background: var(--cell);
+    border-radius: 4px;
+    color: var(--text-dim);
+  }
+  .merkle-hash.root { background: var(--accent); color: var(--bg); font-weight: bold; }
+  .finale {
+    background: linear-gradient(135deg, var(--panel) 0%, #0f172a 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 32px 0;
+    text-align: center;
+  }
+  .finale h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: var(--accent);
+  }
+  .finale p { font-size: 14px; line-height: 1.8; margin: 6px 0; }
+  .confidence-bar {
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 4px 0;
+  }
+  .confidence-bar .fill {
+    height: 100%;
+    background: var(--fresh);
+  }
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Holodeck</h1>
+  <div class="tagline">The Quilt Ecosystem in One Page. Reyes's view, the substrate's view, and the math's view, all at once.</div>
+</div>
+
+<nav class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#bathy">Bathy</a>
+  <a href="#substrate">Substrate</a>
+  <a href="#openers">8 Openers</a>
+  <a href="#convoy">Convoy</a>
+  <a href="#jepa">3 JEPAs</a>
+  <a href="#witness">Witness</a>
+  <a href="#fables">Fables</a>
+  <a href="#math">Math</a>
+  <a href="#topology">Topology</a>
+  <a href="#loop">The Loop</a>
+</nav>
+
+<div class="container">
+
+<section class="section" id="overview">
+  <h2>1. The Ecosystem at a Glance</h2>
+  <div class="subtitle">6 packages, 244 tests, 18 papers, 30 fables, 25 scenarios — and one program that wires them all together.</div>
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="stat-label">Quilt Substrate</div>
+      <div class="stat">11</div>
+      <div class="card-sub">primitives: Z_in, Z_out, JEPA, DoubleEntry, Vibe, GC, Murmur, Graph, Convoy, Decay, Witness</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Openers</div>
+      <div class="stat">8</div>
+      <div class="card-sub">chart, voice, gesture, witness, MIDI, REST, MUD, PLATO</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">JEPAs</div>
+      <div class="stat">3</div>
+      <div class="card-sub">Linear, MLP, KNN — paper 122, Open Q9 resolved</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Theorems Proved</div>
+      <div class="stat">5</div>
+      <div class="card-sub">WitInteg, DecComp, DecOrd, JEPACnv, OpComp — paper 118</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Open Q's Resolved</div>
+      <div class="stat">8</div>
+      <div class="card-sub">convoy, witness, Merkle, JEPAs, justifications, decay rates, geometric median</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Tests</div>
+      <div class="stat">244</div>
+      <div class="card-sub">14+9+13+180+8+12+8 across 6 repos + 8 demo tests</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Fables</div>
+      <div class="stat">30</div>
+      <div class="card-sub">the fables are the requirements</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">β₁ (cycles)</div>
+      <div class="stat">113</div>
+      <div class="card-sub">measured in the meta-cell-graph (paper 120)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="bathy">
+  <h2>2. The Bathy — Reyes sees the bottom</h2>
+  <div class="subtitle">The Inner Sound between Skye and the mainland. 134 cells, 11 agents in the convoy. The chart is the substrate.</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">The chart</div>
+      <div class="card-sub">Depth contours, x/y coordinates, fresh/stale cells</div>
+      <canvas id="bathy-canvas" class="bathy-canvas"></canvas>
+      <div class="card-sub" style="margin-top: 8px;">134 cells. Fresh: <span style="color: var(--fresh)">▓</span>. Stale: <span style="color: var(--stale)">▓</span>. Outlier: <span style="color: var(--red)">▓</span>.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">The convoy</div>
+      <div class="card-sub">10 fishing boats + 1 sailor (Reyes)</div>
+      <div class="convoy-viz">
+        <div class="convoy-boat robust">reyes</div>
+        <div class="convoy-boat robust">boat-00</div>
+        <div class="convoy-boat robust">boat-01</div>
+        <div class="convoy-boat robust">boat-02</div>
+        <div class="convoy-boat robust">boat-03</div>
+        <div class="convoy-boat robust">boat-04</div>
+        <div class="convoy-boat robust">boat-05</div>
+        <div class="convoy-boat robust">boat-06</div>
+        <div class="convoy-boat robust">boat-07</div>
+        <div class="convoy-boat robust">boat-08</div>
+        <div class="convoy-boat robust">boat-09</div>
+      </div>
+      <div style="margin-top: 16px; font-size: 12px; color: var(--text-dim);">
+        <strong style="color: var(--text);">Per-agent decay rates</strong> (Q8: freshness depends on data type):<br>
+        reyes: λ = 0.001/min — human eyes, slow decay<br>
+        boat-NN: λ = 1e-3/min — sonar, slow decay<br>
+        inference: λ = 0.1/10s — substrate's own predictions, fast decay
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="substrate">
+  <h2>3. The Substrate — the soil</h2>
+  <div class="subtitle">11 primitives. Every reactive element is a cell. The cell graph is the canonical form. Any interface is an opener onto the same graph.</div>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="card-title">From cell-runtime (8)</div>
+      <ul style="font-size: 12px; color: var(--text-dim); list-style: none;">
+        <li>• Z_in: input zipper</li>
+        <li>• Z_out: output zipper</li>
+        <li>• JEPA: world model</li>
+        <li>• DoubleEntry: ledger</li>
+        <li>• Vibe: damped oscillator</li>
+        <li>• GC: garbage collect</li>
+        <li>• Murmur: noise/signal</li>
+        <li>• Graph: address space</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">From substrate (3 new)</div>
+      <ul style="font-size: 12px; color: var(--text-dim); list-style: none;">
+        <li>• <strong style="color: var(--accent);">Convoy</strong>: multi-agent consensus</li>
+        <li>• <strong style="color: var(--accent);">Decay</strong>: fog-of-war</li>
+        <li>• <strong style="color: var(--accent);">Witness</strong>: Merkle-chain log</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">4 substrate properties</div>
+      <ul style="font-size: 12px; color: var(--text-dim); list-style: none;">
+        <li>• Tensor encoding (N-dim, sliceable)</li>
+        <li>• Schrödinger pattern (pre-rendered, observed on access)</li>
+        <li>• Fog-of-war decay (c·exp(-λt))</li>
+        <li>• Opener layer (8 openers)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="openers">
+  <h2>4. The 8 Openers — 8 views of the same graph</h2>
+  <div class="subtitle">The same chart, rendered through 8 different interfaces. Each opener is a kindness to a different kind of user.</div>
+  <div class="grid grid-4">
+    <div class="opener-card">
+      <div class="opener-icon">📊</div>
+      <div class="opener-name">Chart</div>
+      <div class="opener-desc">data view</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🔊</div>
+      <div class="opener-name">Voice</div>
+      <div class="opener-desc">TTS — Fable 06 Grandmother</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">👆</div>
+      <div class="opener-name">Gesture</div>
+      <div class="opener-desc">touch — tap, long-press, swipe</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">📜</div>
+      <div class="opener-name">Witness</div>
+      <div class="opener-desc">audit log + justifications</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🎵</div>
+      <div class="opener-name">MIDI</div>
+      <div class="opener-desc">Fable 10 Conductor — the orchestra</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🌐</div>
+      <div class="opener-name">REST</div>
+      <div class="opener-desc">Fable 11 Paper-Tablet — the API</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">🧭</div>
+      <div class="opener-name">MUD</div>
+      <div class="opener-desc">Fable 21 Compass — text adventure</div>
+    </div>
+    <div class="opener-card">
+      <div class="opener-icon">📚</div>
+      <div class="opener-name">PLATO</div>
+      <div class="opener-desc">Fable 06 — the lesson</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="convoy">
+  <h2>5. The Convoy — 4 consensus methods + geometric median</h2>
+  <div class="subtitle">5 honest agents at 12.4-12.6m, 1 outlier at 999m. Which method do you trust?</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">4 methods compared</div>
+      <table style="width: 100%; font-size: 12px; margin-top: 8px;">
+        <tr><td style="color: var(--text-dim);">weighted_mean</td><td style="color: var(--stale); font-weight: bold;">176.92m</td><td style="color: var(--text-dim);">pulled by outlier</td></tr>
+        <tr><td style="color: var(--text-dim);">weighted_median</td><td style="color: var(--fresh); font-weight: bold;">12.50m</td><td style="color: var(--text-dim);">robust</td></tr>
+        <tr><td style="color: var(--text-dim);">trimmed_mean</td><td style="color: var(--fresh); font-weight: bold;">12.50m</td><td style="color: var(--text-dim);">drops outlier</td></tr>
+        <tr><td style="color: var(--text-dim);">geometric_median</td><td style="color: var(--fresh); font-weight: bold;">12.50m</td><td style="color: var(--text-dim);">1D = weighted_median</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">The lesson</div>
+      <div class="card-sub" style="font-style: normal; color: var(--text); margin-top: 12px; line-height: 1.6;">
+        Reyes is a sailor, not a statistician. She doesn't want to compute a mean. She wants the bottom. The substrate gives her 4 methods, all of them in one call: <code style="color: var(--accent);">cell.convoy_value(method=...)</code>. She picks the robust one. The other boats trust her.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="jepa">
+  <h2>6. The 3 JEPAs — predicting the unseen</h2>
+  <div class="subtitle">From coordinates to depth. The substrate's world model. Linear, MLP, and KNN — the trade-off between smoothness and locality.</div>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="card-title">LinearJEPA</div>
+      <div class="card-sub">the default, O(1) per cell</div>
+      <div class="jepe-formula">y = mean(inputs)</div>
+      <div class="card-sub">Predicts 7.500 from {5.0, 10.0}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">MLPJEPA</div>
+      <div class="card-sub">a small neural network</div>
+      <div class="jepe-formula">y = W₂·σ(W₁·x + b₁) + b₂</div>
+      <div class="card-sub">Predicts 8.971, 4 hidden units</div>
+    </div>
+    <div class="card">
+      <div class="card-title">KnnJEPA</div>
+      <div class="card-sub">k-nearest neighbors, k=5</div>
+      <div class="jepe-formula">y = mean(k nearest)</div>
+      <div class="card-sub">50 examples, predicts (25,30) → 12.22m</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="witness">
+  <h2>7. The Witness — the audit log, with the 'why'</h2>
+  <div class="subtitle">Fable 11: a picture is honest by staying silent; a conversation is honest by speaking its uncertainty out loud. The witness log speaks the why.</div>
+  <div class="card">
+    <div class="witness-entry">
+      <span class="agent">reyes</span> <span class="action">write</span> <span class="addr">bay/0005x0006</span>
+      <span class="just">"Tied the lead line to the bow, dropped it, waited 30 seconds, measured 99.9m at the spot."</span>
+    </div>
+    <div class="witness-entry">
+      <span class="agent">skate</span> <span class="action">read</span> <span class="addr">bay/0018x0007</span>
+      <span class="just">"Verifying Reyes's sounding; the depth here is 88.8m on my chart."</span>
+    </div>
+    <div class="witness-entry">
+      <span class="agent">inference</span> <span class="action">infer</span> <span class="addr">bay/0001x0012</span>
+      <span class="just">"Substrate's JEPA predicts 77.7m here based on nearby soundings."</span>
+    </div>
+  </div>
+  <div class="card" style="margin-top: 16px;">
+    <div class="card-title">Merkle tree of witness roots</div>
+    <div class="merkle-tree">
+      <div class="merkle-row">
+        <div class="merkle-hash">a3f2</div>
+        <div class="merkle-hash">8b1e</div>
+        <div class="merkle-hash">c4d5</div>
+        <div class="merkle-hash">7e9a</div>
+      </div>
+      <div class="merkle-row">
+        <div class="merkle-hash">7a1c</div>
+        <div class="merkle-hash">2f4b</div>
+      </div>
+      <div class="merkle-row">
+        <div class="merkle-hash root">e651218eea2d5b83</div>
+      </div>
+    </div>
+    <div class="card-sub" style="margin-top: 8px;">O(log n) inclusion proof for any cell. The witness log is tamper-evident.</div>
+  </div>
+</section>
+
+<section class="section" id="fables">
+  <h2>8. The 5 Best Fables — the heaviest cargo</h2>
+  <div class="subtitle">The fables are the requirements. The substrate is the implementation. Here are 5 that shaped the design.</div>
+  <div class="fable">
+    <div class="fable-title">Fable 11 — Paper and Tablet</div>
+    <div class="fable-text">A picture, a conversation. The paper shows the chart silently. The tablet guesses and tells you its guesses so you can check.</div>
+    <div class="fable-lesson">"A picture is honest by staying silent. A conversation is honest by speaking its uncertainty out loud."</div>
+  </div>
+  <div class="fable">
+    <div class="fable-title">Fable 28 — Abacus and Cell</div>
+    <div class="fable-text">The abacus was a row of beads. The cell is a row of witnesses.</div>
+    <div class="fable-lesson">"Honesty without the possibility of error is just silence. Real honesty requires being wrong, and keeping the record."</div>
+  </div>
+  <div class="fable">
+    <div class="fable-title">Fable 29 — Lever and Decay</div>
+    <div class="fable-text">The lever amplifies. The decay attenuates. Both are honest about the force.</div>
+    <div class="fable-lesson">"The substrate's contribution is the ledger, not the function."</div>
+  </div>
+  <div class="fable">
+    <div class="fable-title">Fable 30 — Cipher and Graph</div>
+    <div class="fable-text">A cipher is a graph with its edges hidden. A graph is a cipher with its edges shown.</div>
+    <div class="fable-lesson">"Memory is weight. History is weight. The cost of self-reference is the point."</div>
+  </div>
+  <div class="fable">
+    <div class="fable-title">Fable 26 — Telescope and Tensor</div>
+    <div class="fable-text">A telescope sees one axis clearly. A tensor sees many axes, all declared.</div>
+    <div class="fable-lesson">"Multi-axis seeing is more accountable truth, but only if the axes are declared."</div>
+  </div>
+</section>
+
+<section class="section" id="math">
+  <h2>9. The Math — 5 proved, 8 resolved, 7 open</h2>
+  <div class="subtitle">The substrate is a 13-theorem object. (Paper 117: The Substrate Math; Paper 118: The Five Theorems; Papers 119+122: Math Updates.)</div>
+  <div class="grid grid-2">
+    <div class="theorem">
+      <div class="theorem-name">WitInteg</div>
+      <div class="theorem-stmt">Witness forgery computationally infeasible (sha256-128 collision resistance).</div>
+    </div>
+    <div class="theorem">
+      <div class="theorem-name">DecComp</div>
+      <div class="theorem-stmt">Most recent refresh dominates. confidence_after = c_fresh * exp(-λ·Δt).</div>
+    </div>
+    <div class="theorem">
+      <div class="theorem-name">DecOrd</div>
+      <div class="theorem-stmt">Freshness ranking is well-defined: write order = time order (monotonic t).</div>
+    </div>
+    <div class="theorem">
+      <div class="theorem-name">JEPACnv</div>
+      <div class="theorem-stmt">Vibe (damped harmonic oscillator) converges to observation distribution. Bug fix: damping constant c=0.1 was missing in v0.1.</div>
+    </div>
+    <div class="theorem">
+      <div class="theorem-name">OpComp</div>
+      <div class="theorem-stmt">Any subset of the 14-tuple has a corresponding opener. 14-tuple = (addr, val, conf, t, weight, sources, history, jepa, convoy, decay, witness, vibe, gc, graph).</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="topology">
+  <h2>10. The Topology — the substrate knows its own shape</h2>
+  <div class="subtitle">β₀ (components) and β₁ (cycles) measured. The fables form a mesh. (Paper 120: The Cycles.)</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">Betti numbers (the meta-cell-graph)</div>
+      <div class="grid grid-2" style="margin-top: 8px;">
+        <div class="card" style="background: var(--bg);">
+          <div class="stat-label">β₀ (components)</div>
+          <div class="stat">87</div>
+          <div class="card-sub">with 15 pieces</div>
+        </div>
+        <div class="card" style="background: var(--bg);">
+          <div class="stat-label">β₁ (cycles)</div>
+          <div class="stat">113</div>
+          <div class="card-sub">with 18 pieces (paper 120)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Decay over time</div>
+      <div class="card-sub">Reyes's cell, advance_time()</div>
+      <div class="confidence-label"><span>now</span><span>1.0000</span></div>
+      <div class="confidence-bar"><div class="fill" style="width: 100%; background: var(--fresh);"></div></div>
+      <div class="confidence-label"><span>+1 hour</span><span>0.0273</span></div>
+      <div class="confidence-bar"><div class="fill" style="width: 2.7%; background: var(--stale);"></div></div>
+      <div class="confidence-label"><span>+1 day</span><span>0.0000</span></div>
+      <div class="confidence-bar"><div class="fill" style="width: 0%;"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="loop">
+  <div class="finale">
+    <h3>The Loop Closes</h3>
+    <p>Canon (papers 107-122) → Code (quilt-substrate) → Tests (244) → Papers (more fables) → Code (more substrate) → Tests (more) → ...</p>
+    <p>The fables are the requirements. The substrate is the implementation.</p>
+    <p>The math is the proof. The witness log is the record.</p>
+    <p>The openers are the kindness. The cycles are the mesh.</p>
+    <p style="margin-top: 16px; color: var(--text-dim); font-size: 12px;">— Reyes, sailing the Inner Sound, 12-inch tablet, open source, MIT</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+  // Bathy canvas — draw depth contours
+  (function() {
+    const canvas = document.getElementById('bathy-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = canvas.clientWidth;
+    const H = canvas.height = canvas.clientHeight;
+
+    // 12x12 grid
+    const N = 12;
+    const cellW = W / N;
+    const cellH = H / N;
+
+    // Depth function: a bathymetric chart
+    function depth(i, j) {
+      // Center peak (Skull Island), then a deep channel
+      const x = (i - 6) / 6;
+      const y = (j - 6) / 6;
+      const r2 = x * x + y * y;
+      // Two channels
+      const ch1 = Math.exp(-((i - 3) ** 2 + (j - 4) ** 2) / 8);
+      const ch2 = Math.exp(-((i - 9) ** 2 + (j - 8) ** 2) / 10);
+      // Shallow at the edges
+      const shore = Math.min(1, r2 * 1.5);
+      return shore * 5 + (1 - shore) * 25 + ch1 * 8 - ch2 * 4;
+    }
+
+    for (let i = 0; i < N; i++) {
+      for (let j = 0; j < N; j++) {
+        const d = depth(i, j);
+        // Color by depth
+        const t = Math.max(0, Math.min(1, d / 30));
+        const r = Math.round(20 + t * 60);
+        const g = Math.round(80 + t * 100);
+        const b = Math.round(180 + t * 50);
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fillRect(i * cellW, j * cellH, cellW, cellH);
+      }
+    }
+
+    // Add some "Reyes's path"
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 2]);
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+    for (let t = 0; t <= 1; t += 0.01) {
+      const x = t * W;
+      const y = H * (1 - t) * 0.7 + H * 0.1;
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Add soundings
+    ctx.fillStyle = 'rgba(255, 100, 100, 0.8)';
+    for (const [i, j] of [[3, 4], [9, 8], [6, 6], [1, 11], [11, 1]]) {
+      ctx.beginPath();
+      ctx.arc(i * cellW + cellW/2, j * cellH + cellH/2, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  })();
+</script>
+
+</body>
+</html>
