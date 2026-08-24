@@ -17,7 +17,7 @@ Imported from 6 packages:
 ======================================================================
   THE INNER SOUND — Reyes's bathy chart with the convoy
 ======================================================================
-Built bathy chart: 130 cells, 11 agents in the convoy
+Built bathy chart: 140 cells, 11 agents in the convoy
 
 --- Per-agent decay rates (Q8: freshness depends on data type) ---
 Set decay rates:
@@ -30,18 +30,18 @@ Set decay rates:
 ======================================================================
 
 --- 1. Chart (data view) ---
-  Yielded 130 value events
-  First event: kind=value, address=bay/0007x0013, value=14.95
+  Yielded 140 value events
+  First event: kind=value, address=bay/0004x0009, value=9.09
 
 --- 2. Voice (TTS — Fable 06 Grandmother) ---
-  Yielded 130 speech events
+  Yielded 140 speech events
   First 3 phrases:
-    "Cell bay/0000x0008: 19.32. fresh."
-    "Cell bay/0000x0009: 10.29. fresh."
-    "Cell bay/0000x0011: 11.42. fresh."
+    "Cell bay/0000x0009: 9.96. fresh."
+    "Cell bay/0000x0015: 23.16. fresh."
+    "Cell bay/0001x0006: 24.95. fresh."
 
 --- 3. Gesture (touch — Fable 06 Grandmother) ---
-  Yielded 130 tap events
+  Yielded 140 tap events
   First cell: tap=observe, long_press=witness, swipe=refresh
 
 --- 4. Witness (audit log) ---
@@ -49,22 +49,55 @@ Set decay rates:
   First entry: agent=boat-00, action=write
 
 --- 5. MIDI (Fable 10 Conductor — the orchestra) ---
-  Yielded 130 note events
-  First 4 notes (a chord): [102, 104, 105, 106]
+  Yielded 140 note events
+  First 4 notes (a chord): [104, 105, 107, 108]
 
 --- 6. REST (Fable 11 Paper-Tablet — the API) ---
-  Yielded 260 endpoint events (130 GET, 130 POST)
-  First endpoint: GET /api/v1/cells/bay/0007x0013
+  Yielded 280 endpoint events (140 GET, 140 POST)
+  First endpoint: GET /api/v1/cells/bay/0004x0009
 
 --- 7. MUD (Fable 21 Compass — the text adventure) ---
-  Yielded 130 room events
-  First room: "You are at bay/0007x0013. Value: 14.949091766987213. Confidence: 1.00...."
+  Yielded 140 room events
+  First room: "You are at bay/0004x0009. Value: 9.088165634405133. Confidence: 1.00...."
   Exits: 0 directions
 
 --- 8. PLATO (Fable 06 Grandmother — the lesson) ---
-  Yielded 130 lesson events
-  First lesson: Lesson: bay/0007x0013
-  Content: 14.949091766987213
+  Yielded 140 lesson events
+  First lesson: Lesson: bay/0004x0009
+  Content: 9.088165634405133
+
+======================================================================
+  THE 5 NEW OPENERS — Slate, Harbor, Reef, Dive, Tide
+======================================================================
+
+--- 9. Slate (the hand-drawn chart) ---
+  Yielded 140 slate events
+  First 3 lines:
+    bay/0000x0009 | :::          | conf=1.00
+    bay/0000x0015 | @@@@@@@@@    | conf=1.00
+    bay/0001x0006 | ##########   | conf=1.00
+
+--- 10. Harbor (the map — coordinates and depths) ---
+  Yielded 141 events (140 markers)
+  First marker: bay/0004x0009 lat=0.88, lon=0.125, depth=9.09fm
+
+--- 11. Reef (the 3D depth contours) ---
+  Yielded 140 reef events
+  First reef: {'kind': 'reef', 'address': 'bay/0000x0009', 'height': 8, 'width': 5, 'bleached': True, 'bump_lines': ['o       ', ':      ', ':     ', ':    ', ':   ', ' :  ', '  : ', '   :', '   ~~~~~']}
+
+--- 12. Dive (the underwater descent — pressure increasing) ---
+  Yielded 142 dive events
+  First 3 events (descending):
+    {'kind': 'dive', 'phase': 'surface', 'text': 'You stand on the boat. The substrate lies beneath.', 'depth_m': 0, 'pressure_atm': 1.0}
+    {'kind': 'dive', 'phase': 'descend', 'address': 'bay/0000x0009', 'depth_m': 9.96, 'pressure_atm': 2.0, 'sound': '...', 'line': '  10.0m | 2.00 atm | bay/0000x0009 (9.956585169677608) .........'}
+    {'kind': 'dive', 'phase': 'descend', 'address': 'bay/0000x0015', 'depth_m': 33.11, 'pressure_atm': 4.31, 'sound': '...', 'line': '  33.1m | 4.31 atm | bay/0000x0015 (23.157624471546832) .........'}
+
+--- 13. Tide (the trend — which cells are getting fresher or staler) ---
+  Yielded 140 tide events
+  First 3 events:
+    {'kind': 'tide', 'address': 'bay/0004x0009', 'current': 'still', 'delta': 0.0, 'note': 'No neighbors in substrate.'}
+    {'kind': 'tide', 'address': 'bay/0016x0013', 'current': 'still', 'delta': 0.0, 'note': 'No neighbors in substrate.'}
+    {'kind': 'tide', 'address': 'bay/0016x0006', 'current': 'still', 'delta': 0.0, 'note': 'No neighbors in substrate.'}
 
 ======================================================================
   THE 3 JEPAs — Linear, MLP, KNN (Open Q9: non-linear prediction)
@@ -75,50 +108,73 @@ Set decay rates:
 
 --- 2. MLPJEPA (a small neural network) ---
   MLP trained: input_dim=4, hidden_dim=4
-  MLP prediction: 6.322
+  MLP prediction: 3.795
 
 --- 3. KnnJEPA (k-nearest neighbors) ---
   KNN trained on 50 examples
-  Predict (25, 30): depth ≈ 10.09m
-  Predict (60, 75): depth ≈ 11.21m
-  Predict (90, 90): depth ≈ 10.81m
+  Predict (25, 30): depth ≈ 11.97m
+  Predict (60, 75): depth ≈ 11.97m
+  Predict (90, 90): depth ≈ 11.97m
 
 ======================================================================
   THE WITNESS — with justifications (Fable 11: the 'why' not just the 'what')
 ======================================================================
 Three witness entries with justifications:
-  reyes write bay/0007x0013: "Tied the lead line to the bow, dropped it, waited 30 seconds, measured 99.9m at the spot"
-  skate read bay/0000x0012: "Verifying Reyes's sounding; the depth here is 88.8m on my chart"
-  inference inference bay/0012x0007: "Substrate's JEPA predicts 77.7m here based on nearby soundings"
+  reyes write bay/0004x0009: "Tied the lead line to the bow, dropped it, waited 30 seconds, measured 99.9m at the spot"
+  skate read bay/0016x0013: "Verifying Reyes's sounding; the depth here is 88.8m on my chart"
+  inference inference bay/0016x0006: "Substrate's JEPA predicts 77.7m here based on nearby soundings"
 
 ======================================================================
   THE CONVOY — 4 consensus methods + geometric median (Open Q1, Q5)
 ======================================================================
 Convoy: 5 honest agents at 12.4-12.6m, 1 outlier at 999m
 
-  weighted_mean:   176.92m  (pulled by outlier)
+  weighted_mean:   152.94m  (pulled by outlier)
   weighted_median: 12.50m  (robust)
-  trimmed_mean:    12.50m  (drops outlier)
+  trimmed_mean:    11.93m  (drops outlier)
   geometric_median: 12.50m  (1D = weighted_median)
 
 ======================================================================
   THE SUBSTRATE-TRAINER — JEPA model trained on the witness log
 ======================================================================
-Trained: 9660 examples, 11 agents
-  target_mean: 12.781
-  target_std:  5.578
+Trained: 9460 examples, 11 agents
+  target_mean: 12.549
+  target_std:  5.217
 
 Predictions:
-  ['reyes']: depth ≈ 12.78m (model confidence: 1.00)
-  ['reyes', 'boat-00']: depth ≈ 12.79m (model confidence: 1.00)
-  ['boat-00', 'boat-01']: depth ≈ 12.79m (model confidence: 1.00)
+  ['reyes']: depth ≈ 12.55m (model confidence: 1.00)
+  ['reyes', 'boat-00']: depth ≈ 12.55m (model confidence: 1.00)
+  ['boat-00', 'boat-01']: depth ≈ 12.55m (model confidence: 1.00)
+
+======================================================================
+  THE TEMPERATURE — entropy of the witness log (Paper 124, Q14)
+======================================================================
+Top 5 hottest cells:
+  bay/0002x0013  T=1.0986  regime=warm
+  bay/0019x0010  T=1.0986  regime=warm
+  bay/0017x0005  T=1.0986  regime=warm
+  bay/0012x0011  T=1.0986  regime=warm
+  bay/0005x0010  T=1.0986  regime=warm
+Top 5 coldest cells:
+  bay/0016x0016  T=0.6931  regime=warm
+  bay/0017x0014  T=0.6931  regime=warm
+  bay/0017x0013  T=0.6931  regime=warm
+  bay/0017x0012  T=0.6931  regime=warm
+  bay/0018x0011  T=0.6931  regime=warm
+
+Substrate-wide T̄ = 1.0201 nats
+Regime distribution:
+  frozen  : 0 cells
+  cold    : 0 cells
+  warm    : 140 cells
+  hot     : 0 cells
 
 ======================================================================
   THE TOPOLOGY — the substrate knows its own shape (Open Q13)
 ======================================================================
-  V (cells)   = 130
+  V (cells)   = 140
   E (edges)   = 0
-  β₀ (components) = 130
+  β₀ (components) = 140
   β₁ (cycles)     = 0
 
   The substrate is a forest. No cycles yet.
@@ -126,14 +182,14 @@ Predictions:
 ======================================================================
   THE MERKLE TREE — O(log n) inclusion proofs (Open Q4)
 ======================================================================
-  Merkle root of all witness roots: d8dccc3d05141e77
+  Merkle root of all witness roots: c3c752bdce5ae4c8
   Length: 16 hex chars = 64 bits
-  Merkle proof for bay/0007x0013: 8 hashes (O(log 130))
+  Merkle proof for bay/0004x0009: 8 hashes (O(log 140))
 
 ======================================================================
   THE TIME — advance_time(dt) for batch simulation
 ======================================================================
-  Confidence of bay/0007x0013 over time:
+  Confidence of bay/0004x0009 over time:
     now:        1.0000
     +1 hour:    0.0273
     +1 day:     0.0000

@@ -41,6 +41,7 @@ from quilt_substrate import (
     Cell, Substrate, ConvoyEntry, WitnessEntry, Vibe,
     Opener, ChartOpener, VoiceOpener, GestureOpener, WitnessOpener,
     MIDIOpener, RESTOpener, MUDOpener, PLATOOpener,
+    SlateOpener, HarborOpener, ReefOpener, DiveOpener, TideOpener,
     register, get, all_openers,
     LinearJEPA, MLPJEPA, KnnJEPA, auto_train_jepa,
 )
@@ -174,6 +175,54 @@ def showcase_8_openers(chart):
         print(f"  Content: {e['content']}")
 
 
+def showcase_5_new_openers(chart):
+    """Show the 5 new openers (Slate, Harbor, Reef, Dive, Tide)."""
+    section("THE 5 NEW OPENERS — Slate, Harbor, Reef, Dive, Tide")
+    substrate = chart.substrate
+
+    subsection("9. Slate (the hand-drawn chart)")
+    events = list(SlateOpener().activate(substrate))
+    if events:
+        print(f"  Yielded {len(events)} slate events")
+        print(f"  First 3 lines:")
+        for e in events[:3]:
+            print(f"    {e.get('text', '')}")
+
+    subsection("10. Harbor (the map — coordinates and depths)")
+    events = list(HarborOpener().activate(substrate))
+    # Find first marker (not header)
+    marker = next((e for e in events if e.get("kind") == "harbor_marker"), None)
+    if marker:
+        d = marker.get("depth_fathoms")
+        d_str = f"{d:.2f}" if isinstance(d, (int, float)) else "?"
+        n_markers = sum(1 for e in events if e.get("kind") == "harbor_marker")
+        print(f"  Yielded {len(events)} events ({n_markers} markers)")
+        print(f"  First marker: {marker.get('address')} lat={marker.get('lat')}, lon={marker.get('lon')}, depth={d_str}fm")
+
+    subsection("11. Reef (the 3D depth contours)")
+    events = list(ReefOpener().activate(substrate))
+    if events:
+        e = events[0]
+        print(f"  Yielded {len(events)} reef events")
+        print(f"  First reef: {e}")
+
+    subsection("12. Dive (the underwater descent — pressure increasing)")
+    events = list(DiveOpener().activate(substrate))
+    if events:
+        print(f"  Yielded {len(events)} dive events")
+        print(f"  First 3 events (descending):")
+        for e in events[:3]:
+            print(f"    {e}")
+
+    subsection("13. Tide (the trend — which cells are getting fresher or staler)")
+    events = list(TideOpener().activate(substrate))
+    if events:
+        print(f"  Yielded {len(events)} tide events")
+        print(f"  First 3 events:")
+        for e in events[:3]:
+            print(f"    {e}")
+
+
 def showcase_jepas(chart):
     """Show all 3 JEPA implementations."""
     section("THE 3 JEPAs — Linear, MLP, KNN (Open Q9: non-linear prediction)")
@@ -279,6 +328,34 @@ def showcase_substrate_trainer(chart):
     for ctx in [["reyes"], ["reyes", "boat-00"], ["boat-00", "boat-01"]]:
         pred, conf = model.predict(ctx)
         print(f"  {ctx}: depth ≈ {pred:.2f}m (model confidence: {conf:.2f})")
+
+
+def showcase_temperature(chart):
+    """Show the substrate's temperature (Paper 124)."""
+    section("THE TEMPERATURE — entropy of the witness log (Paper 124, Q14)")
+    substrate = chart.substrate
+    cells = substrate.all_cells()
+    if not cells:
+        return
+    # Per-cell temperatures
+    temps = [(c, c.temperature(window_seconds=3600), c.regime()) for c in cells]
+    temps.sort(key=lambda x: -x[1])
+    print("Top 5 hottest cells:")
+    for c, T, regime in temps[:5]:
+        print(f"  {c.address}  T={T:.4f}  regime={regime}")
+    print("Top 5 coldest cells:")
+    for c, T, regime in temps[-5:]:
+        print(f"  {c.address}  T={T:.4f}  regime={regime}")
+    # Substrate-wide
+    T_bar = substrate.temperature()
+    print(f"\nSubstrate-wide T̄ = {T_bar:.4f} nats")
+    # Distribution of regimes
+    from collections import Counter
+    regimes = Counter(r for _, _, r in temps)
+    print("Regime distribution:")
+    for regime in ["frozen", "cold", "warm", "hot"]:
+        n = regimes.get(regime, 0)
+        print(f"  {regime:8s}: {n} cells")
 
 
 def showcase_topology(chart):
@@ -413,6 +490,10 @@ def main():
     if not args.quiet:
         showcase_8_openers(chart)
 
+    # 5 new openers
+    if not args.quiet:
+        showcase_5_new_openers(chart)
+
     # 3 JEPAs
     if not args.quiet:
         showcase_jepas(chart)
@@ -428,6 +509,10 @@ def main():
     # Substrate-trainer
     if not args.quiet:
         showcase_substrate_trainer(chart)
+
+    # Temperature (Paper 124)
+    if not args.quiet:
+        showcase_temperature(chart)
 
     # Topology
     if not args.quiet:
