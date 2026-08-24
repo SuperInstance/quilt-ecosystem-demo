@@ -1,0 +1,171 @@
+
+╔══════════════════════════════════════════════════════════════════════╗
+║  THE INNER SOUND — A Quilt ecosystem flagship demo                    ║
+║  Reyes, sailing a 12-inch tablet, sees the bottom of the sea        ║
+║  The substrate is the soil. The bathy is the plant.                  ║
+║  The witness log is the rain. The openers are the kindness.          ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Imported from 6 packages:
+  • cell-runtime (8-primitive cell)
+  • river-dream-log (Hold/Wake/Dawn)
+  • quilt-substrate (11-primitive substrate + 8 openers + 3 JEPAs)
+  • substrate-trainer (JEPA model on witness log)
+  • quilt-bathy (the bathy cross-section tool)
+  • porch (3 a.m. thoughts CLI — not used in demo)
+
+======================================================================
+  THE INNER SOUND — Reyes's bathy chart with the convoy
+======================================================================
+Built bathy chart: 130 cells, 11 agents in the convoy
+
+--- Per-agent decay rates (Q8: freshness depends on data type) ---
+Set decay rates:
+  reyes:     λ = 0.001 (1/minute half-life)
+  boat-00:   λ = 0.001 (1/minute half-life)
+  inference: λ = 0.1 (1/10s half-life)
+
+======================================================================
+  THE 8 OPENERS — the same chart, 8 different views (Fable 06, 10, 11, 21)
+======================================================================
+
+--- 1. Chart (data view) ---
+  Yielded 130 value events
+  First event: kind=value, address=bay/0007x0013, value=14.95
+
+--- 2. Voice (TTS — Fable 06 Grandmother) ---
+  Yielded 130 speech events
+  First 3 phrases:
+    "Cell bay/0000x0008: 19.32. fresh."
+    "Cell bay/0000x0009: 10.29. fresh."
+    "Cell bay/0000x0011: 11.42. fresh."
+
+--- 3. Gesture (touch — Fable 06 Grandmother) ---
+  Yielded 130 tap events
+  First cell: tap=observe, long_press=witness, swipe=refresh
+
+--- 4. Witness (audit log) ---
+  Yielded 610 witness events
+  First entry: agent=boat-00, action=write
+
+--- 5. MIDI (Fable 10 Conductor — the orchestra) ---
+  Yielded 130 note events
+  First 4 notes (a chord): [102, 104, 105, 106]
+
+--- 6. REST (Fable 11 Paper-Tablet — the API) ---
+  Yielded 260 endpoint events (130 GET, 130 POST)
+  First endpoint: GET /api/v1/cells/bay/0007x0013
+
+--- 7. MUD (Fable 21 Compass — the text adventure) ---
+  Yielded 130 room events
+  First room: "You are at bay/0007x0013. Value: 14.949091766987213. Confidence: 1.00...."
+  Exits: 0 directions
+
+--- 8. PLATO (Fable 06 Grandmother — the lesson) ---
+  Yielded 130 lesson events
+  First lesson: Lesson: bay/0007x0013
+  Content: 14.949091766987213
+
+======================================================================
+  THE 3 JEPAs — Linear, MLP, KNN (Open Q9: non-linear prediction)
+======================================================================
+
+--- 1. LinearJEPA (the default) ---
+  Linear prediction: 7.500 (mean of inputs)
+
+--- 2. MLPJEPA (a small neural network) ---
+  MLP trained: input_dim=4, hidden_dim=4
+  MLP prediction: 6.322
+
+--- 3. KnnJEPA (k-nearest neighbors) ---
+  KNN trained on 50 examples
+  Predict (25, 30): depth ≈ 10.09m
+  Predict (60, 75): depth ≈ 11.21m
+  Predict (90, 90): depth ≈ 10.81m
+
+======================================================================
+  THE WITNESS — with justifications (Fable 11: the 'why' not just the 'what')
+======================================================================
+Three witness entries with justifications:
+  reyes write bay/0007x0013: "Tied the lead line to the bow, dropped it, waited 30 seconds, measured 99.9m at the spot"
+  skate read bay/0000x0012: "Verifying Reyes's sounding; the depth here is 88.8m on my chart"
+  inference inference bay/0012x0007: "Substrate's JEPA predicts 77.7m here based on nearby soundings"
+
+======================================================================
+  THE CONVOY — 4 consensus methods + geometric median (Open Q1, Q5)
+======================================================================
+Convoy: 5 honest agents at 12.4-12.6m, 1 outlier at 999m
+
+  weighted_mean:   176.92m  (pulled by outlier)
+  weighted_median: 12.50m  (robust)
+  trimmed_mean:    12.50m  (drops outlier)
+  geometric_median: 12.50m  (1D = weighted_median)
+
+======================================================================
+  THE SUBSTRATE-TRAINER — JEPA model trained on the witness log
+======================================================================
+Trained: 9660 examples, 11 agents
+  target_mean: 12.781
+  target_std:  5.578
+
+Predictions:
+  ['reyes']: depth ≈ 12.78m (model confidence: 1.00)
+  ['reyes', 'boat-00']: depth ≈ 12.79m (model confidence: 1.00)
+  ['boat-00', 'boat-01']: depth ≈ 12.79m (model confidence: 1.00)
+
+======================================================================
+  THE TOPOLOGY — the substrate knows its own shape (Open Q13)
+======================================================================
+  V (cells)   = 130
+  E (edges)   = 0
+  β₀ (components) = 130
+  β₁ (cycles)     = 0
+
+  The substrate is a forest. No cycles yet.
+
+======================================================================
+  THE MERKLE TREE — O(log n) inclusion proofs (Open Q4)
+======================================================================
+  Merkle root of all witness roots: d8dccc3d05141e77
+  Length: 16 hex chars = 64 bits
+  Merkle proof for bay/0007x0013: 8 hashes (O(log 130))
+
+======================================================================
+  THE TIME — advance_time(dt) for batch simulation
+======================================================================
+  Confidence of bay/0007x0013 over time:
+    now:        1.0000
+    +1 hour:    0.0273
+    +1 day:     0.0000
+    +1 year:    0.000000
+
+  The substrate ages like real data. The convoy's soundings stay fresh longer than chat.
+
+======================================================================
+  THE RIVER — agentic journaling (Hold / Wake / Dawn)
+======================================================================
+Reyes held 3 thoughts:
+  reyes saw a 99.9m sounding at the spot...
+  the convoy disagreed on the depth at the sandbar...
+  the substrate's JEPA predicted 77.7m based on the convoy...
+Reyes woke: WOKEN (wakes: 1)
+Reyes dawns: DAWNED (text: the convoy disagreed on the depth at the sandbar...)
+Reyes has 1 dawned thoughts (the memories that have crystallized)
+
+======================================================================
+  THE LEGACY CELL — cell-runtime (8 primitives, the cell as a Python type)
+======================================================================
+Cell legacy/001: value=0.0, ticks=50, vibe=184.670
+  After 50 observations of 42.0, the Vibe has converged toward the target
+  This is the 8-primitive cell, the substrate's ancestor.
+
+======================================================================
+  THE LOOP — it closes
+======================================================================
+  Canon (papers 107-122) → Code (quilt-substrate) → Tests (236) →
+  Papers (more fables) → Code (more substrate) → Tests (more) → ...
+
+  The fables are the requirements. The substrate is the implementation.
+  The math is the proof. The witness log is the record.
+  The openers are the kindness. The cycles are the mesh.
+  The loop closes.

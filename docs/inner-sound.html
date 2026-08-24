@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Inner Sound — A Quilt Ecosystem Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131826;
+    --cell: #1f2937;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --accent: #38bdf8;
+    --border: #334155;
+    --fresh: #4ade80;
+    --stale: #fbbf24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    padding: 0;
+  }
+  .header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .header .badge { font-size: 11px; color: var(--text-dim); }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: calc(100vh - 80px);
+  }
+  .col {
+    padding: 24px 32px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+  }
+  .col:last-child { border-right: none; }
+  .col h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+  .col h2:first-child { margin-top: 0; }
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .subsection {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .kv {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 4px 12px;
+    font-size: 12px;
+    margin: 8px 0;
+  }
+  .kv .k { color: var(--text-dim); }
+  .kv .v { color: var(--text); }
+  .phrase {
+    padding: 4px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    margin: 2px 0;
+    font-size: 12px;
+    font-style: italic;
+  }
+  .chord {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .chord-note {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 11px;
+  }
+  .endpoint {
+    padding: 6px 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    margin: 4px 0;
+    font-size: 12px;
+  }
+  .method {
+    display: inline-block;
+    padding: 1px 6px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+  .method.post { background: var(--fresh); }
+  .betti {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 8px 0;
+  }
+  .betti-cell {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+  }
+  .betti-cell .label { font-size: 10px; color: var(--text-dim); }
+  .betti-cell .value { font-size: 24px; font-weight: bold; color: var(--fresh); }
+  .betti-cell .formula { font-size: 10px; color: var(--text-dim); margin-top: 4px; }
+  .consensus-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 4px 12px;
+    font-size: 12px;
+  }
+  .consensus-grid .name { color: var(--text-dim); }
+  .consensus-grid .value { font-weight: bold; }
+  .consensus-grid .value.robust { color: var(--fresh); }
+  .consensus-grid .value.pulled { color: var(--stale); }
+  .confidence-bar {
+    height: 16px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 4px 0;
+  }
+  .confidence-bar .fill {
+    height: 100%;
+    background: var(--fresh);
+    transition: width 0.3s;
+  }
+  .confidence-bar .fill.stale { background: var(--stale); }
+  .confidence-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .finale {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .finale h3 {
+    color: var(--accent);
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .finale p {
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>The Inner Sound — A Quilt Ecosystem Demo</h1>
+  <div class="badge">Reyes, sailing a 12-inch tablet, sees the bottom of the sea. The substrate is the soil. The bathy is the plant. The witness log is the rain.</div>
+</div>
+<div class="layout">
+  <div class="col" id="col1">
+    <h2>The bathy chart</h2>
+    <div class="section">
+      <div class="section-title">Bathy Chart Built</div>
+      <div class="kv">
+        <div class="k">Cells:</div> <div class="v">134</div>
+        <div class="k">Agents in convoy:</div> <div class="v">11</div>
+        <div class="k">Witness log entries:</div> <div class="v">610</div>
+      </div>
+    </div>
+    <h2>Per-agent decay rates</h2>
+    <div class="section">
+      <div class="kv">
+        <div class="k">reyes:</div> <div class="v">λ = 0.001 (1/minute half-life)</div>
+        <div class="k">boat-00:</div> <div class="v">λ = 0.001 (1/minute half-life)</div>
+        <div class="k">inference:</div> <div class="v">λ = 0.1 (1/10s half-life)</div>
+      </div>
+    </div>
+    <h2>The 8 openers</h2>
+    <div class="section">
+      <div class="subsection">1. Chart (data view)</div>
+      <div class="phrase">First event: kind=value, address=bay/0015x0011, value=11.29</div>
+    </div>
+    <div class="section">
+      <div class="subsection">2. Voice (TTS — Fable 06 Grandmother)</div>
+      <div class="phrase">"Cell bay/0000x0013: 19.56. fresh."</div>
+      <div class="phrase">"Cell bay/0000x0015: 24.50. fresh."</div>
+      <div class="phrase">"Cell bay/0001x0006: 18.45. fresh."</div>
+    </div>
+    <div class="section">
+      <div class="subsection">3. Gesture (touch — Fable 06)</div>
+      <div class="phrase">First cell: tap=observe, long_press=witness, swipe=refresh</div>
+    </div>
+    <div class="section">
+      <div class="subsection">4. Witness (audit log)</div>
+      <div class="phrase">Yielded 610 witness events. First entry: agent=boat-00, action=write</div>
+    </div>
+    <div class="section">
+      <div class="subsection">5. MIDI (Fable 10 Conductor)</div>
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">First 4 notes (a chord):</div>
+      <div class="chord">
+        <div class="chord-note">103</div>
+        <div class="chord-note">106</div>
+        <div class="chord-note">108</div>
+        <div class="chord-note">109</div>
+      </div>
+    </div>
+  </div>
+  <div class="col" id="col2">
+    <div class="section">
+      <div class="subsection">6. REST (Fable 11 Paper-Tablet)</div>
+      <div class="endpoint"><span class="method">GET</span> /api/v1/cells/bay/0005x0006</div>
+      <div class="endpoint"><span class="method post">POST</span> /api/v1/cells/bay/0005x0006/witness</div>
+      <div style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">Yielded 282 endpoint events (141 GET, 141 POST)</div>
+    </div>
+    <div class="section">
+      <div class="subsection">7. MUD (Fable 21 Compass — the text adventure)</div>
+      <div class="phrase">"You are at bay/0005x0006. Value: 21.2. Confidence: 1.00."</div>
+      <div class="phrase">"Exits: 0 directions"</div>
+    </div>
+    <div class="section">
+      <div class="subsection">8. PLATO (Fable 06 Grandmother — the lesson)</div>
+      <div class="phrase">Lesson: bay/0005x0006</div>
+      <div class="phrase">Content: 21.200950675454827</div>
+    </div>
+    <h2>The 3 JEPAs</h2>
+    <div class="section">
+      <div class="kv">
+        <div class="k">LinearJEPA:</div> <div class="v">7.500 (mean of inputs)</div>
+        <div class="k">MLPJEPA:</div> <div class="v">8.971 (small NN, 4 inputs, 4 hidden)</div>
+        <div class="k">KnnJEPA:</div> <div class="v">50 examples, predicts (25,30)→12.22m, (60,75)→13.13m</div>
+      </div>
+    </div>
+    <h2>Witness with justifications (Fable 11)</h2>
+    <div class="section">
+      <div class="phrase">reyes: "Tied the lead line to the bow, dropped it, waited 30 seconds, measured 99.9m at the spot"</div>
+      <div class="phrase">skate: "Verifying Reyes's sounding; the depth here is 88.8m on my chart"</div>
+      <div class="phrase">inference: "Substrate's JEPA predicts 77.7m here based on nearby soundings"</div>
+    </div>
+    <h2>The convoy — 4 consensus methods</h2>
+    <div class="section">
+      <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">5 honest at 12.4-12.6m, 1 outlier at 999m</div>
+      <div class="consensus-grid">
+        <div class="name">weighted_mean:</div> <div class="value pulled">176.92m (pulled by outlier)</div>
+        <div class="name">weighted_median:</div> <div class="value robust">12.50m (robust)</div>
+        <div class="name">trimmed_mean:</div> <div class="value robust">12.50m (drops outlier)</div>
+        <div class="name">geometric_median:</div> <div class="value robust">12.50m (1D = weighted_median)</div>
+      </div>
+    </div>
+    <h2>Substrate-trainer (9,440 examples)</h2>
+    <div class="section">
+      <div class="kv">
+        <div class="k">target_mean:</div> <div class="v">13.400</div>
+        <div class="k">target_std:</div> <div class="v">5.889</div>
+        <div class="k">['reyes']:</div> <div class="v">depth ≈ 13.41m</div>
+        <div class="k">['reyes', 'boat-00']:</div> <div class="v">depth ≈ 13.41m</div>
+        <div class="k">['boat-00', 'boat-01']:</div> <div class="v">depth ≈ 13.41m</div>
+      </div>
+    </div>
+    <h2>Topology (Betti numbers)</h2>
+    <div class="section">
+      <div class="betti">
+        <div class="betti-cell">
+          <div class="label">β₀ (components)</div>
+          <div class="value">139</div>
+          <div class="formula">V - E + C</div>
+        </div>
+        <div class="betti-cell">
+          <div class="label">β₁ (cycles)</div>
+          <div class="value">0</div>
+          <div class="formula">E - V + β₀</div>
+        </div>
+      </div>
+    </div>
+    <h2>Merkle tree (O(log n))</h2>
+    <div class="section">
+      <div class="kv">
+        <div class="k">Merkle root:</div> <div class="v">e651218eea2d5b83</div>
+        <div class="k">Proof for bay/0019x0011:</div> <div class="v">8 hashes (O(log 139))</div>
+      </div>
+    </div>
+    <h2>Advance time</h2>
+    <div class="section">
+      <div class="confidence-label"><span>now</span><span>1.0000</span></div>
+      <div class="confidence-bar"><div class="fill" style="width: 100%"></div></div>
+      <div class="confidence-label"><span>+1 hour</span><span>0.0273</span></div>
+      <div class="confidence-bar"><div class="fill stale" style="width: 2.73%"></div></div>
+      <div class="confidence-label"><span>+1 day</span><span>0.0000</span></div>
+      <div class="confidence-bar"><div class="fill stale" style="width: 0%"></div></div>
+      <div class="confidence-label"><span>+1 year</span><span>0.000000</span></div>
+      <div class="confidence-bar"><div class="fill stale" style="width: 0%"></div></div>
+    </div>
+    <h2>River dream log (Hold/Wake/Dawn)</h2>
+    <div class="section">
+      <div class="phrase">Held: "reyes saw a 99.9m sounding at the spot"</div>
+      <div class="phrase">Held: "the convoy disagreed on the depth at the sandbar"</div>
+      <div class="phrase">Held: "the substrate's JEPA predicted 77.7m based on the convoy"</div>
+      <div class="phrase">Woke: WOKEN (wakes: 1)</div>
+      <div class="phrase">Dawns: DAWNED (the dream becomes a memory)</div>
+    </div>
+    <h2>Legacy cell (8-primitive ancestor)</h2>
+    <div class="section">
+      <div class="kv">
+        <div class="k">Cell:</div> <div class="v">legacy/001</div>
+        <div class="k">Ticks:</div> <div class="v">50</div>
+        <div class="k">Vibe:</div> <div class="v">converging toward 42.0</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="padding: 24px 32px;">
+  <div class="finale">
+    <h3>The Loop Closes</h3>
+    <p>Canon (papers 107-122) → Code (quilt-substrate) → Tests (236) → Papers (more fables) → Code (more substrate) → Tests (more) → ...</p>
+    <p>The fables are the requirements. The substrate is the implementation.</p>
+    <p>The math is the proof. The witness log is the record.</p>
+    <p>The openers are the kindness. The cycles are the mesh.</p>
+  </div>
+</div>
+</body>
+</html>
